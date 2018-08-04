@@ -19,8 +19,7 @@ public class TaiwanRail {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        String test = "<A,B,5><B,C,6><A,C,3><A,D,3><D,B,10>";
-        System.out.println(test.length());
+        String test = "<A,B,5><B,C,4><C,D,8><D,C,8><D,E,6><A,D,5><C,E,2><E,B,3><A,E,7>";
         readInput(test);
     }
 
@@ -31,25 +30,30 @@ public class TaiwanRail {
     public static void readInput(String input) {
         HashMap<Integer, Edge> edges = new HashMap<Integer, Edge>();
         HashMap<Integer, Node> nodes = new HashMap<Integer, Node>();
-        int count = 0;
+        int nodeCount = 0;
+        int edgeCount = 0;
         String[] paths = input.split(">");
         for (String s : paths) {
             Node tempNode1 = new Node(s.substring(1, 2));
             Node tempNode2 = new Node(s.substring(3, 4));
             Edge newEdge = new Edge(tempNode1.getSymbol(), tempNode2.getSymbol(), Integer.parseInt(s.substring(5, s.length())));
-
+            edges.put(edgeCount, newEdge);
+            edgeCount++;
+                    
             if (!tempNode1.checkForNode(nodes)) {
-                nodes.put(count, tempNode1);
+                nodes.put(nodeCount, tempNode1);
                 System.out.println(tempNode1);
             }
 
             if (!tempNode2.checkForNode(nodes)) {
-                count++;
-                nodes.put(count, tempNode2);
+                nodeCount++;
+                nodes.put(nodeCount, tempNode2);
                 System.out.println(tempNode2);
             }
-            count++;
+            nodeCount++;
         }
         Graph graph = new Graph(nodes, edges);
+        String[] s = {"A", "E", "B", "C", "D"};
+        System.out.println(graph.getPathWeight(s));
     }
 }
