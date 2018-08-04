@@ -7,31 +7,37 @@ package taiwanrail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author Todd
  */
 public class Node {
-    
+
     private String symbol;
-    private HashMap<Integer, Edge> edges = new HashMap<Integer, Edge>();
-    
-    public Node(String symbol){
+
+    public Node(String symbol) {
         this.symbol = symbol;
     }
-    
-    public String getSymbol(){
+
+    public String getSymbol() {
         return this.symbol;
     }
 
-    public HashMap<Integer, Edge> getEdges(){
-        return this.edges;
+    @Override
+    public String toString() {
+
+        return "This is node " + symbol;
     }
-    
-   @Override
-   public String toString(){
-       return "This is node " + symbol;
-   } 
-    
+
+    public boolean checkForNode(HashMap<Integer, Node> nodes) {
+        for (Map.Entry<Integer, Node> entry : nodes.entrySet()) {
+            String value = entry.getValue().symbol;
+            if (this.symbol.equals(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

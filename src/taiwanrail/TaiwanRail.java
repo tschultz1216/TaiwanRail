@@ -6,6 +6,7 @@
 package taiwanrail;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -18,37 +19,37 @@ public class TaiwanRail {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        String test = "<A,B,5><B,C,6>";
+        String test = "<A,B,5><B,C,6><A,C,3><A,D,3><D,B,10>";
         System.out.println(test.length());
         readInput(test);
     }
 
+// TODO CHANGE TO SPLIT INPUT ON >
+// StartNode = s.substr(1,2)
+// EndNode = s.substr(3,4)
+// Weight = Integer.parseInt(s.substr(5, s.length - 1))
     public static void readInput(String input) {
         HashMap<Integer, Edge> edges = new HashMap<Integer, Edge>();
         HashMap<Integer, Node> nodes = new HashMap<Integer, Node>();
         int count = 0;
-        for (int split = 7; split < input.length() + 1;) {
-            
-            Edge newEdge = new Edge(input.substring(split - 6, split - 5), input.substring(split - 4, split - 3), Integer.parseInt(input.substring(split - 2, split - 1)));
-            edges.put(count, newEdge);
-            Node tempNode1 = new Node(input.substring(split - 6, split - 5));
-            Node tempNode2 = new Node(input.substring(split - 4, split - 3));
-            tempNode1.getEdges().put(count, newEdge);
-            tempNode2.getEdges().put(count, newEdge);
-            
-            if (!nodes.containsValue(tempNode1)) {
+        String[] paths = input.split(">");
+        for (String s : paths) {
+            Node tempNode1 = new Node(s.substring(1, 2));
+            Node tempNode2 = new Node(s.substring(3, 4));
+            Edge newEdge = new Edge(tempNode1.getSymbol(), tempNode2.getSymbol(), Integer.parseInt(s.substring(5, s.length())));
+
+            if (!tempNode1.checkForNode(nodes)) {
                 nodes.put(count, tempNode1);
+                System.out.println(tempNode1);
             }
-            
-            if (!nodes.containsValue(tempNode2)) {
+
+            if (!tempNode2.checkForNode(nodes)) {
+                count++;
                 nodes.put(count, tempNode2);
+                System.out.println(tempNode2);
             }
-            
-            System.out.println(edges.get(count).toString());
-            System.out.println(nodes.get(count).toString());
-            
-            split += split;
             count++;
         }
+        Graph graph = new Graph(nodes, edges);
     }
 }
