@@ -11,4 +11,11 @@ package taiwanrail;
  */
 public class Node {
     
+    String symbol;
+    Edge[] edges;
+    
+    public Node(){
+    
+    }
+    
 }

@@ -5,10 +5,21 @@
  */
 package taiwanrail;
 
+import java.util.HashMap;
+
 /**
  *
  * @author Todd
  */
 public class Edge {
+   int weight;
+   String start;
+   String end;
+   
+   public Edge(int weight, String start, String end){
+        this.weight = weight;
+        this.start = start;
+        this.end = end;
+   }
     
 }
