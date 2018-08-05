@@ -11,7 +11,7 @@ import java.util.PriorityQueue;
  * @author Todd
  */
 public class Graph {
-    
+
     private final HashMap<Integer, Node> nodes;
     private final HashMap<Integer, Edge> edges;
 
@@ -19,15 +19,15 @@ public class Graph {
         this.nodes = nodes;
         this.edges = edges;
     }
-    
-    public HashMap<Integer, Node> getNodes(){
+
+    public HashMap<Integer, Node> getNodes() {
         return this.nodes;
     }
 
-    public HashMap<Integer, Edge> getEdges(){
+    public HashMap<Integer, Edge> getEdges() {
         return this.edges;
-    }    
-    
+    }
+
     public void printPathWeight(String[] stops) {
         int weight = this.getPathWeight(stops);
         if (weight == -1) {
@@ -287,12 +287,88 @@ public class Graph {
         }
         return finalPath;
     }
-    
-    private boolean propagate(Node current, Node end, ArrayList<String> stops, int numStops){
-        ArrayList<String> path = this.getUniqueStopsForRoute(current, end, stops, numStops);
-        if(path.isEmpty()){
-            return true;
+
+//    private boolean propagate(Node current, Node end, ArrayList<String> stops, int numStops){
+//        ArrayList<String> path = this.getUniqueStopsForRoute(current, end, stops, numStops);
+//        if(path.isEmpty()){
+//            return true;
+//        }
+//        return false;
+//    }
+    private int getPathWeight(ArrayList<Node> nodes) {
+        int weight = 0;
+        for (Node node : nodes) {
+            ArrayList<Edge> localEdges = getNeighborEdges(node);
+            int count = 0;
+            for (Edge edge : localEdges) {
+                if (edge.getEnd().equals(nodes.get(count))) {
+                    weight += edge.getWeight();
+                }
+                count++;
+            }
         }
-        return false;
+        return weight;
     }
+
+    private ArrayList<Edge> getParentEdges(Node node) {
+        ArrayList<Edge> parentEdges = new ArrayList<Edge>();
+        for (Map.Entry<Integer, Edge> edge : edges.entrySet()) {
+            if (edge.getValue().getEnd().equals(node.getSymbol())) {
+                parentEdges.add(edge.getValue());
+            }
+        }
+        return parentEdges;
+    }
+
+    public ArrayList<Node> getShortestCycle(Node source) {
+        ArrayList<Edge> parents = getParentEdges(source);
+        ArrayList<Edge> children = getNeighborEdges(source);
+        ArrayList<Node> path = new ArrayList<Node>();
+        path.add(source);
+        for (Edge parent : parents) {
+            for (Edge child : children) {
+                if (child.getEnd().equals(parent.getStart())) {
+                    path.add(getNode(child.getEnd()));
+                    path.add(getNode(parent.getStart()));
+                    path.add(source);
+                    return path;
+                }
+                ArrayList<Edge> grandChildren = getNeighborEdges(getNode(child.getEnd()));
+                for (Edge grandChild : grandChildren) {
+                    if (grandChild.getEnd().equals(parent.getStart())) {
+                        path.add(getNodeFromEdge(child, false));
+                        path.add(getNodeFromEdge(grandChild, false));
+                        path.add(getNodeFromEdge(parent, false));
+                        path.add(source);
+                        return path;
+                    }
+                }
+            }
+        }
+        if (path.size() <= 1) {
+            path = null;
+        }
+        return path;
+    }
+
+//        ArrayList<Edge> localEdges = getNeighborEdges(source);
+//        ArrayList<Node> path = new ArrayList<Node>();
+//        ArrayList<Node> childPath = new ArrayList<Node>();
+//        int minPathWeight = Integer.MAX_VALUE;
+//        path.add(source);
+//
+//        for (Edge edge : localEdges) {
+//            ArrayList<Node> tempPath = this.getShortestPath(this.getNodeFromEdge(edge, true), source);
+//            int tempWeight = this.getPathWeight(tempPath);
+//            if (tempWeight < minPathWeight) {
+//                childPath = tempPath;
+//                minPathWeight = tempWeight;
+//            }
+//        }
+//        for (Node node : childPath) {
+//            path.add(node);
+//            System.out.println(node);
+//        }
+//        return path;
+//    }
 }

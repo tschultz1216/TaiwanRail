@@ -5,6 +5,7 @@
  */
 package taiwanrail;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -72,13 +73,19 @@ public class TaiwanRail {
 
 //        int j = graph.getNumOfUniqueStopsForRoute(graph.getNode("A"), graph.getNode("C"), 4);
 //        System.out.println(j);
-
         Dijkstra dijkstra = new Dijkstra(graph);
         dijkstra.execute(nodes.get(0));
-        
-        LinkedList<Node> path = dijkstra.getPath(graph.getNode("E"));
+// gets shortest path from A to any other Node
+        LinkedList<Node> path = dijkstra.getPath(graph.getNode("C"));
 
-        for (Node node : path) {
-            System.out.println(node);
-        }    }
+//        dijkstra.printPredecessors();
+//        for (Node node : path) {
+//            System.out.println(node);
+//        }
+        
+        ArrayList<Node> otherPath = graph.getShortestCycle(graph.getNode("C"));
+        for(Node n : otherPath){
+            System.out.println(n);
+        }
+    }
 }
