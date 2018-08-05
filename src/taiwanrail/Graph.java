@@ -5,6 +5,7 @@
  */
 package taiwanrail;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +23,34 @@ public class Graph {
         this.edges = edges;
     }
 
+    public void printPathWeight(String[] stops) {
+        int weight = this.getPathWeight(stops);
+        if (weight == -1) {
+            System.out.println("NO SUCH ROUTE");
+            return;
+        }
+        System.out.println(weight);
+        return;
+    }
+
+    private boolean containsEdge(String start, String end) {
+        for (Map.Entry<Integer, Edge> e : edges.entrySet()) {
+            Edge edge = e.getValue();
+            if (edge.getStart().equals(start) && edge.getEnd().equals(end)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Node getNode(String symbol) {
+        for (Map.Entry<Integer, Node> n : nodes.entrySet()) {
+            if (n.getValue().getSymbol().equals(symbol)) {
+                return n.getValue();
+            }
+        } return null;
+    }
+
     public int getPathWeight(String[] stops) {
         int weight = 0;
         for (int i = 0; i < stops.length - 1; i++) {
@@ -29,14 +58,26 @@ public class Graph {
             String end = stops[i + 1];
             for (Map.Entry<Integer, Edge> e : edges.entrySet()) {
                 Edge edge = e.getValue();
-                if (edge.getStart().equals(start) && edge.getEnd().equals(end)) {
-                    weight += edge.getWeight();
+                if (this.containsEdge(start, end)) {
+                    if (edge.getStart().equals(start) && edge.getEnd().equals(end)) {
+                        weight += edge.getWeight();
+                    }
+                } else {
+                    return -1;
                 }
-
-                // do what you have to do here
-                // In your case, another loop.
             }
         }
         return weight;
+    }
+
+    public ArrayList<Edge> getNeighbors(Node n) {
+
+        ArrayList<Edge> neighbors = new ArrayList<Edge>();
+        for (Map.Entry<Integer, Edge> e : edges.entrySet()) {
+            if (e.getValue().getStart().equals(n.getSymbol())) {
+                neighbors.add(e.getValue());
+            }
+        }
+        return neighbors;
     }
 }

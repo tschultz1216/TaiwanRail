@@ -42,18 +42,27 @@ public class TaiwanRail {
                     
             if (!tempNode1.checkForNode(nodes)) {
                 nodes.put(nodeCount, tempNode1);
-                System.out.println(tempNode1);
+//                System.out.println(tempNode1);
             }
 
             if (!tempNode2.checkForNode(nodes)) {
                 nodeCount++;
                 nodes.put(nodeCount, tempNode2);
-                System.out.println(tempNode2);
+//                System.out.println(tempNode2);
             }
             nodeCount++;
         }
         Graph graph = new Graph(nodes, edges);
-        String[] s = {"A", "E", "B", "C", "D"};
-        System.out.println(graph.getPathWeight(s));
+        String[] a = {"A", "B", "C"};
+        String[] b = {"A", "D"};
+        String[] c = {"A", "D", "C"};
+        String[] d = {"A", "E", "B", "C", "D"};
+        String[] e = {"A", "E", "D"};
+        graph.printPathWeight(a);
+        graph.printPathWeight(b);
+        graph.printPathWeight(c);
+        graph.printPathWeight(d);
+        graph.printPathWeight(e);
+        graph.getNeighbors(graph.getNode("C"));
     }
 }
