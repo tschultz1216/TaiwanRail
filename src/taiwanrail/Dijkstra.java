@@ -19,19 +19,19 @@ import java.util.Set;
  * @author Todd
  */
 public class Dijkstra {
-    
+
     private HashMap<Integer, Node> nodes;
     private HashMap<Integer, Edge> edges;
     private Set<Node> settledNodes;
     private Set<Node> unSettledNodes;
     private Map<Node, Node> predecessors;
     private Map<Node, Integer> distance;
-    
+
     public Dijkstra(Graph graph) {
         this.nodes = new HashMap<Integer, Node>(graph.getNodes());
         this.edges = new HashMap<Integer, Edge>(graph.getEdges());
     }
-    
+
     public void execute(Node source) {
         settledNodes = new HashSet<Node>();
         unSettledNodes = new HashSet<Node>();
@@ -62,9 +62,9 @@ public class Dijkstra {
     }
 
     private int getDistance(Node node, Node target) {
-         for (Map.Entry<Integer, Edge> edge : edges.entrySet()) {
+        for (Map.Entry<Integer, Edge> edge : edges.entrySet()) {
             if (edge.getValue().getStart().equals(node.getSymbol())
-                    && edge.getValue().getEnd().equals(target)) {
+                    && edge.getValue().getEnd().equals(target.getSymbol())) {
                 return edge.getValue().getWeight();
             }
         }
@@ -74,7 +74,7 @@ public class Dijkstra {
     private List<Node> getNeighbors(Node node) {
         List<Node> neighbors = new ArrayList<Node>();
         for (Map.Entry<Integer, Edge> edge : edges.entrySet()) {
-            if (edge.getValue().getStart().equals(node)
+            if (edge.getValue().getStart().equals(node.getSymbol())
                     && !isSettled(getNodeFromEdge(edge.getValue(), false))) {
                 neighbors.add(getNodeFromEdge(edge.getValue(), false));
             }
@@ -116,6 +116,7 @@ public class Dijkstra {
         }
         return null;
     }
+
     private int getShortestDistance(Node destination) {
         Integer d = distance.get(destination);
         if (d == null) {
@@ -133,7 +134,7 @@ public class Dijkstra {
         LinkedList<Node> path = new LinkedList<Node>();
         Node step = target;
         // check if a path exists
-        if (predecessors.get(step) == null) {
+        if (getPredecessorByNode(step) == null) {
             return null;
         }
         path.add(step);
@@ -144,6 +145,16 @@ public class Dijkstra {
         // Put it into the correct order
         Collections.reverse(path);
         return path;
-    }    
-    
+    }
+
+    public Node getPredecessorByNode(Node node) {
+
+        for (Map.Entry<Node, Node> n : this.predecessors.entrySet()) {
+            if (n.getKey().getSymbol() == node.getSymbol()) {
+                return n.getValue();
+            }
+        }
+        return null;
+    }
+
 }

@@ -11,15 +11,23 @@ import java.util.PriorityQueue;
  * @author Todd
  */
 public class Graph {
-
-    HashMap<Integer, Node> nodes;
-    HashMap<Integer, Edge> edges;
+    
+    private final HashMap<Integer, Node> nodes;
+    private final HashMap<Integer, Edge> edges;
 
     public Graph(HashMap<Integer, Node> nodes, HashMap<Integer, Edge> edges) {
         this.nodes = nodes;
         this.edges = edges;
     }
+    
+    public HashMap<Integer, Node> getNodes(){
+        return this.nodes;
+    }
 
+    public HashMap<Integer, Edge> getEdges(){
+        return this.edges;
+    }    
+    
     public void printPathWeight(String[] stops) {
         int weight = this.getPathWeight(stops);
         if (weight == -1) {
