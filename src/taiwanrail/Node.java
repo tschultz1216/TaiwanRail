@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package taiwanrail;
 
 import java.util.ArrayList;
@@ -13,18 +8,60 @@ import java.util.Map;
  *
  * @author Todd
  */
-public class Node {
+public class Node implements Comparable<Node> {
+
+    public enum Status {
+        NEW,
+        VISITED
+    }
 
     private String symbol;
+    private Status status;
+    private int distance = Integer.MAX_VALUE;
+    private Node previous = null;
+
+    public Node() {
+    }
 
     public Node(String symbol) {
         this.symbol = symbol;
+        status = Status.NEW;
     }
 
     public String getSymbol() {
         return this.symbol;
     }
 
+    public void visit() {
+        this.status = Status.VISITED;
+        return;
+    }
+
+    public Status getStatus() {
+        return this.status;
+    }
+
+    public int getDistance() {
+        return this.distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
+    
+    public void setPrevious(Node n){
+        this.previous = n;
+    }
+    
+    public Node getPrevious(){
+        return this.previous;
+    }
+    
+    @Override
+    public int compareTo(Node other) {
+        return Integer.compare(distance, other.distance);
+    }
+    
     @Override
     public String toString() {
 

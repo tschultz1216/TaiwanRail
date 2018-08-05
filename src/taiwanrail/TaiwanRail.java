@@ -39,7 +39,7 @@ public class TaiwanRail {
             Edge newEdge = new Edge(tempNode1.getSymbol(), tempNode2.getSymbol(), Integer.parseInt(s.substring(5, s.length())));
             edges.put(edgeCount, newEdge);
             edgeCount++;
-                    
+
             if (!tempNode1.checkForNode(nodes)) {
                 nodes.put(nodeCount, tempNode1);
 //                System.out.println(tempNode1);
@@ -63,6 +63,13 @@ public class TaiwanRail {
         graph.printPathWeight(c);
         graph.printPathWeight(d);
         graph.printPathWeight(e);
-        graph.getNeighbors(graph.getNode("C"));
+//        graph.getNeighbors(graph.getNode("C"));
+//        graph.computePaths(graph.getNode("C"));
+//        graph.computeShortestPath(graph.getNode("A"), graph.getNode("C"));
+        int i = graph.loopWithMaxUniqueStops(graph.getNode("C"), 3);
+        System.out.println(i);
+
+        int j = graph.getNumOfUniqueStopsForRoute(graph.getNode("A"), graph.getNode("C"), 4);
+        System.out.println(j);
     }
 }
