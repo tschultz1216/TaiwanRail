@@ -55,37 +55,69 @@ public class TaiwanRail {
             nodeCount++;
         }
         Graph graph = new Graph(nodes, edges);
-        String[] a = {"A", "B", "C"};
-        String[] b = {"A", "D"};
-        String[] c = {"A", "D", "C"};
-        String[] d = {"A", "E", "B", "C", "D"};
-        String[] e = {"A", "E", "D"};
-        graph.printPathWeight(a);
-        graph.printPathWeight(b);
-        graph.printPathWeight(c);
-        graph.printPathWeight(d);
-        graph.printPathWeight(e);
-//        graph.getNeighbors(graph.getNode("C"));
-//        graph.computePaths(graph.getNode("C"));
-//        graph.computeShortestPath(graph.getNode("A"), graph.getNode("C"));
+        
+        ArrayList<String> allStops = new ArrayList<String>();
+        allStops.add("A");
+        allStops.add("B");
+        allStops.add("C");
+        allStops.add("D");
+        allStops.add("E");
+        
+        ArrayList<String> routeA = new ArrayList<String>();
+        routeA.add(allStops.get(0));
+        routeA.add(allStops.get(1));
+        routeA.add(allStops.get(2));
+        
+        ArrayList<String> routeB = new ArrayList<String>();
+        routeB.add(allStops.get(0));
+        routeB.add(allStops.get(3));
+        
+        ArrayList<String> routeC = new ArrayList<String>();
+        routeC.add(allStops.get(0));
+        routeC.add(allStops.get(3));
+        routeC.add(allStops.get(2));
+        
+        ArrayList<String> routeD = new ArrayList<String>();
+        routeD.add(allStops.get(0));
+        routeD.add(allStops.get(4));
+        routeD.add(allStops.get(1));
+        routeD.add(allStops.get(2));
+        routeD.add(allStops.get(3));
+        
+        ArrayList<String> routeE = new ArrayList<String>();
+        routeE.add(allStops.get(0));
+        routeE.add(allStops.get(4));
+        routeE.add(allStops.get(3));
+// Print out solutions of Problems a-e
+        graph.printPathWeight(routeA);
+        graph.printPathWeight(routeB);
+        graph.printPathWeight(routeC);
+        graph.printPathWeight(routeD);
+        graph.printPathWeight(routeE);
+// Print answer to question f
         int i = graph.loopWithMaxUniqueStops(graph.getNode("C"), 3);
         System.out.println(i);
-
-//        int j = graph.getNumOfUniqueStopsForRoute(graph.getNode("A"), graph.getNode("C"), 4);
-//        System.out.println(j);
+// Print answer to question g
+// Print out number of unique 4 stop trips from A to C
+        int plz = graph.tryMe(graph.getNode("A"), graph.getNode("C"));
+        System.out.println("TOTAL TRIPS: " + plz);
+// Perform Dijkstra traversal to find shortest path from origin
         Dijkstra dijkstra = new Dijkstra(graph);
         dijkstra.execute(nodes.get(0));
+// Question H
 // gets shortest path from A to any other Node
         LinkedList<Node> path = dijkstra.getPath(graph.getNode("C"));
-
-//        dijkstra.printPredecessors();
-//        for (Node node : path) {
-//            System.out.println(node);
-//        }
-        
+        for (Node node : path) {
+            System.out.println(node);
+        }
+//Question I
+// gets shortest cycle from a given node, if no cycle is present it will return null
         ArrayList<Node> otherPath = graph.getShortestCycle(graph.getNode("C"));
         for(Node n : otherPath){
             System.out.println(n);
         }
+//Question J
+//Gets Number of Cyces under a given weight limit
+        System.out.println(graph.getNumberOfCyclesUnderWeightLimit(graph.getNode("C"), 50));
     }
 }

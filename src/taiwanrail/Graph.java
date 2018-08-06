@@ -28,7 +28,7 @@ public class Graph {
         return this.edges;
     }
 
-    public void printPathWeight(String[] stops) {
+    public void printPathWeight(ArrayList<String> stops) {
         int weight = this.getPathWeight(stops);
         if (weight == -1) {
             System.out.println("NO SUCH ROUTE");
@@ -66,6 +66,25 @@ public class Graph {
         return null;
     }
 
+    public int getPathWeight(ArrayList<String> path) {
+        int weight = 0;
+        for (String current : path) {
+            if (path.indexOf(current) < path.size() - 1) {
+                String next = path.get(path.indexOf(current) + 1);
+                if (this.containsEdge(current, next)) {
+                    Edge edge = getEdge(current, next);
+                    weight += edge.getWeight();
+                    if (edge.getEnd().equals(path.get(path.size() - 1))) {
+                        return weight;
+                    }
+                } else {
+                    return -1;
+                }
+            }
+        }
+        return weight;
+    }
+
     public Node getNodeFromEdge(Edge edge, boolean flag) {
         if (flag) {
             for (Map.Entry<Integer, Node> n : nodes.entrySet()) {
@@ -81,25 +100,6 @@ public class Graph {
             }
         }
         return null;
-    }
-
-    public int getPathWeight(String[] stops) {
-        int weight = 0;
-        for (int i = 0; i < stops.length - 1; i++) {
-            String start = stops[i];
-            String end = stops[i + 1];
-            for (Map.Entry<Integer, Edge> e : edges.entrySet()) {
-                Edge edge = e.getValue();
-                if (this.containsEdge(start, end)) {
-                    if (edge.getStart().equals(start) && edge.getEnd().equals(end)) {
-                        weight += edge.getWeight();
-                    }
-                } else {
-                    return -1;
-                }
-            }
-        }
-        return weight;
     }
 
     private Node getNearestNeighbor(Node start, ArrayList<Node> neighbors) {
@@ -257,6 +257,7 @@ public class Graph {
                 found = ((path.size() - 1) / numStops) + found;
                 stops = new ArrayList<String>();
                 stops.add(start.getSymbol());
+                path = new ArrayList<String>();
             }
         }
         return found;
@@ -265,12 +266,14 @@ public class Graph {
     private ArrayList<String> getUniqueStopsForRoute(Node current, Node end, ArrayList<String> stops, int numStops) {
         stops.add(current.getSymbol());
         ArrayList<String> finalPath = new ArrayList<String>();
-        if (stops.size() - 1 == numStops && stops.get(stops.size() - 1).equals(end.getSymbol())) {
+        if (stops.size() == numStops + 1 && stops.get(stops.size() - 1).equals(end.getSymbol())) {
             System.out.println("Path: ");
             for (String s : stops) {
                 System.out.println(s);
             }
-            return stops;
+            ArrayList<String> result = stops;
+            stops = new ArrayList<String>();
+            return result;
         }
         if (stops.size() - 1 > numStops) {
             return new ArrayList<String>();
@@ -280,34 +283,32 @@ public class Graph {
         for (Edge e : edges) {
             ArrayList<String> path = this.getUniqueStopsForRoute(this.getNodeFromEdge(e, false), end, stops, numStops);
             if (!path.isEmpty()) {
-                for (String s : path) {
-                    finalPath.add(s);
-                }
+                ArrayList<String> result = stops;
+                stops = new ArrayList<String>();
+                return result;
             }
         }
         return finalPath;
     }
 
-//    private boolean propagate(Node current, Node end, ArrayList<String> stops, int numStops){
-//        ArrayList<String> path = this.getUniqueStopsForRoute(current, end, stops, numStops);
-//        if(path.isEmpty()){
-//            return true;
-//        }
-//        return false;
-//    }
-    private int getPathWeight(ArrayList<Node> nodes) {
-        int weight = 0;
-        for (Node node : nodes) {
-            ArrayList<Edge> localEdges = getNeighborEdges(node);
-            int count = 0;
-            for (Edge edge : localEdges) {
-                if (edge.getEnd().equals(nodes.get(count))) {
-                    weight += edge.getWeight();
+    public int tryMe(Node Start, Node end) {
+        int count = 0;
+        ArrayList<Edge> parents = getParentEdges(end);
+        ArrayList<Edge> children = getNeighborEdges(Start);
+        for (Edge child : children) {
+            ArrayList<Edge> grandChildren = getNeighborEdges(getNode(child.getEnd()));
+            for (Edge grandChild : grandChildren) {
+                ArrayList<Edge> greatGrandChildren = getNeighborEdges(getNode(grandChild.getEnd()));
+                for (Edge greatGrandChild : greatGrandChildren) {
+                    for (Edge parent : parents) {
+                        if (parent.getStart().equals(greatGrandChild.getEnd())) {
+                            count++;
+                        }
+                    }
                 }
-                count++;
             }
         }
-        return weight;
+        return count;
     }
 
     private ArrayList<Edge> getParentEdges(Node node) {
@@ -328,7 +329,6 @@ public class Graph {
         for (Edge parent : parents) {
             for (Edge child : children) {
                 if (child.getEnd().equals(parent.getStart())) {
-                    path.add(getNode(child.getEnd()));
                     path.add(getNode(parent.getStart()));
                     path.add(source);
                     return path;
@@ -339,7 +339,6 @@ public class Graph {
                         path.add(getNodeFromEdge(child, false));
                         path.add(getNodeFromEdge(grandChild, false));
                         path.add(getNodeFromEdge(parent, false));
-                        path.add(source);
                         return path;
                     }
                 }
@@ -351,24 +350,50 @@ public class Graph {
         return path;
     }
 
-//        ArrayList<Edge> localEdges = getNeighborEdges(source);
-//        ArrayList<Node> path = new ArrayList<Node>();
-//        ArrayList<Node> childPath = new ArrayList<Node>();
-//        int minPathWeight = Integer.MAX_VALUE;
-//        path.add(source);
-//
-//        for (Edge edge : localEdges) {
-//            ArrayList<Node> tempPath = this.getShortestPath(this.getNodeFromEdge(edge, true), source);
-//            int tempWeight = this.getPathWeight(tempPath);
-//            if (tempWeight < minPathWeight) {
-//                childPath = tempPath;
-//                minPathWeight = tempWeight;
-//            }
-//        }
-//        for (Node node : childPath) {
-//            path.add(node);
-//            System.out.println(node);
-//        }
-//        return path;
-//    }
+    public int getNumberOfCyclesUnderWeightLimit(Node source, int limit) {
+        ArrayList<ArrayList<Node>> paths = new ArrayList<ArrayList<Node>>();
+        ArrayList<Edge> parents = getParentEdges(source);
+        ArrayList<Edge> children = getNeighborEdges(source);
+        ArrayList<Node> path = new ArrayList<Node>();
+        int count = 0;
+        int check = 0;
+        path.add(source);
+        for (Edge parent : parents) {
+            for (Edge child : children) {
+                if (child.getEnd().equals(parent.getStart())) {
+                    path.add(getNode(child.getEnd()));
+                    path.add(source);
+                    ArrayList<String> stringPath = new ArrayList<String>();
+                    for (Node node : path) {
+                        stringPath.add(node.getSymbol());
+                    }
+//                    check = getPathWeight(stringPath);
+
+                    count += Math.floor(limit / (getPathWeight(stringPath)));
+                    paths.add(path);
+                    paths.add(path);
+                    path = new ArrayList<Node>();
+                    path.add(source);
+                }
+                ArrayList<Edge> grandChildren = getNeighborEdges(getNode(child.getEnd()));
+                for (Edge grandChild : grandChildren) {
+                    if (grandChild.getEnd().equals(parent.getStart())) {
+                        path.add(getNodeFromEdge(child, false));
+                        path.add(getNodeFromEdge(grandChild, false));
+                        path.add(getNodeFromEdge(parent, false));
+                        ArrayList<String> stringPath = new ArrayList<String>();
+                        for (Node node : path) {
+                            stringPath.add(node.getSymbol());
+                        }
+//                        check = getPathWeight(stringPath);
+                        count += (int) (limit / getPathWeight(stringPath));
+                        paths.add(path);
+                        path = new ArrayList<Node>();
+                        path.add(source);
+                    }
+                }
+            }
+        }
+        return count;
+    }
 }

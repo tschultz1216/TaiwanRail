@@ -65,7 +65,7 @@ public class Node implements Comparable<Node> {
     @Override
     public String toString() {
 
-        return "This is node " + symbol;
+        return "Node: " + symbol;
     }
 
     public boolean checkForNode(HashMap<Integer, Node> nodes) {
