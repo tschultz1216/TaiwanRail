@@ -291,7 +291,7 @@ public class Graph {
         return finalPath;
     }
 
-    public int tryMe(Node Start, Node end) {
+    public int findRouteBetweenNodesWithFourStops(Node Start, Node end) {
         int count = 0;
         ArrayList<Edge> parents = getParentEdges(end);
         ArrayList<Edge> children = getNeighborEdges(Start);
