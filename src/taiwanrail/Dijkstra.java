@@ -147,20 +147,6 @@ public class Dijkstra {
         return path;
     }
 
-    public LinkedList<Node> getCycle(Node source) {
-        LinkedList<Node> path = new LinkedList<Node>();
-        Node step = source;
- 
-        if (getPredecessorByNode(step) == null) {
-            return null;
-        }
-        path.add(step);
-        while (predecessors.get(step) != null) {
-            step = predecessors.get(step);
-            path.add(step);
-        }
-    }
-
     public Node getPredecessorByNode(Node node) {
 
         for (Map.Entry<Node, Node> n : this.predecessors.entrySet()) {
@@ -171,21 +157,10 @@ public class Dijkstra {
         return null;
     }
 
-//    public LinkedList<Node> getShortestCycle(Node source) {
-//    }
-//
-//    public LinkedList<LinkedList<Node>> getAllCycles(Node source) {
-//
-//    }
+
     public void printPredecessors() {
         for (Map.Entry<Node, Node> n : this.predecessors.entrySet()) {
             System.out.println(n);
         }
     }
-
-    public void resetGraph() {
-        for (Map.Entry<Integer, Node> node : nodes.entrySet()) {
-            node.getValue().
-        }
-        }
-    }
+}
