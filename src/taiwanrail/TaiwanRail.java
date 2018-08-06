@@ -127,7 +127,7 @@ public class TaiwanRail {
 //Question J
 //Gets Number of Cycles under a given weight limit
         System.out.println("Question J");
-        System.out.println("Number of cycles that exist with total weight less than 50:");
+        System.out.println("Number of cycles with source C that exist with total weight less than 50:");
         System.out.println(graph.getNumberOfCyclesUnderWeightLimit(graph.getNode("C"), 50));
     }
 
